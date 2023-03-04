@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+package imageprocessing;
+
+// Request message for the ProcessImage method
+message ProcessImageRequest {
+  // The input image bytes
+  bytes image = 1;
+  string imageType = 2;
+  // The list of requested image processing operations
+  repeated ImageProcessorOperation operations = 3;
+}
+
+// Response message for the ProcessImage method
+message ProcessImageResponse {
+  // The processed image bytes
+  repeated bytes image = 1;
+}
+
+// Image processing operations
+enum FlipDirection {
+  HORIZONTAL = 0;
+  VERTICAL = 1;
+}
+
+// Flip Params
+message FlipParams {
+// The direction of the flip
+FlipDirection direction = 1;
+}
+
+// Grayscale Params
+message GrayscaleParams {}
+
+// Rotate Params
+message RotateParams {
+  // The angle of the rotation
+  int32 angle = 1;
+}
+
+// Resize Params
+message ResizeParams {
+  // The dimensions of the new size
+  int32 width = 1;
+  int32 height = 2;
+}
+
+// Thumbnail Params
+message ThumbnailParams {
+  // The dimensions of the thumbnail
+  int32 width = 1;
+  int32 height = 2;
+}
+
+// Image processing operation message
+message ImageProcessorOperation {
+
+  string operationType = 1;
+  // One of the supported image processing operations
+  oneof operation {
+    FlipParams flip = 2;
+    GrayscaleParams grayscale = 3;
+    RotateParams rotate = 4;
+    ResizeParams resize = 5;
+    ThumbnailParams thumbnail = 6;
+  }
+}
+ 
+// Definition of the ImageProcessor service
+service ImageProcessor {
+  // Processes an input image with a list of requested image processing operations
+  rpc processImage(ProcessImageRequest) returns (ProcessImageResponse) {}
+}
